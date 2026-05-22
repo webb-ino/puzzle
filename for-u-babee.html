@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>for u babee 🫶🫶🫶</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0e0c0a;
+      --bg2: #181411;
+      --bg3: #222018;
+      --cream: #f5efe6;
+      --cream2: #e8dfd3;
+      --pink: #ff3f7a;
+      --pink2: #ff6b9d;
+      --acid: #c8ff57;
+      --acid2: #e2ff8f;
+      --warm: #ff9f4a;
+      --text: #f5efe6;
+      --text2: #b8ae9f;
+      --text3: #6b6358;
+      --border: #2e2b24;
+      --border2: #3d3930;
+      --tile-off: #1e1c17;
+      --tile-border: #3d3930;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --shadow: 0 4px 32px rgba(0,0,0,0.5);
+      --glow-pink: 0 0 24px rgba(255,63,122,0.3);
+      --glow-acid: 0 0 24px rgba(200,255,87,0.25);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NOISE */
+    .noise {
+      position: fixed; inset: 0; z-index: 999; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+
+    /* NAV */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 32px;
+      background: rgba(14,12,10,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-weight: 800; font-size: 20px;
+      color: var(--cream); text-decoration: none; letter-spacing: -0.5px;
+    }
+    .logo:hover { color: var(--pink); }
+
+    /* BUTTONS */
+    .btn-big {
+      background: var(--acid); color: var(--bg); border: none;
+      border-radius: var(--radius-sm); padding: 16px 36px;
+      font-family: var(--font-display); font-size: 15px; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.3px; transition: all 0.2s;
+    }
+    .btn-big:hover { background: var(--acid2); transform: translateY(-2px); box-shadow: var(--glow-acid); }
+
+    .btn-ghost {
+      background: transparent; color: var(--text2);
+      border: 1px solid var(--border2); border-radius: var(--radius-sm);
+      padding: 10px 22px; font-family: var(--font-body); font-size: 14px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--cream2); color: var(--cream); }
+
+    /* PLAY PAGE */
+    .play-wrap {
+      max-width: 600px; margin: 0 auto;
+      padding: 100px 24px 100px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    .play-meta { text-align: center; margin-bottom: 8px; }
+    .play-meta h2 {
+      font-family: var(--font-display);
+      font-size: clamp(24px, 5vw, 40px);
+      font-weight: 800; letter-spacing: -1px;
+      color: var(--cream); margin-bottom: 6px;
+    }
+    #play-creator-tag {
+      font-size: 13px; color: var(--text3); display: inline-block; margin-bottom: 20px;
+    }
+
+    .hint {
+      font-size: 13px; color: var(--text2);
+      margin-bottom: 16px; text-align: center; line-height: 1.5;
+    }
+
+    /* PLAY GRID */
+    .play-tile-grid {
+      display: grid; gap: 10px;
+      max-width: 420px; width: 100%; margin: 16px auto;
+    }
+
+    .play-tile {
+      aspect-ratio: 1;
+      background: var(--tile-off);
+      border: 2px solid var(--tile-border);
+      border-radius: 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: clamp(11px, 2vw, 16px);
+      font-weight: 700; color: var(--text3);
+      transition: all 0.15s; user-select: none; position: relative;
+    }
+    .play-tile:hover { border-color: var(--pink2); background: var(--bg3); }
+    .play-tile.pressed {
+      background: var(--pink); border-color: var(--pink);
+      color: #fff; box-shadow: var(--glow-pink); transform: scale(0.93);
+    }
+    .play-tile.correct-flash {
+      background: var(--acid); border-color: var(--acid);
+      color: var(--bg); box-shadow: var(--glow-acid);
+    }
+    .play-tile.wrong-flash { background: #ff3b3b; border-color: #ff3b3b; color: #fff; }
+    .play-tile .tile-label {
+      font-size: 11px; color: var(--text3);
+      position: absolute; bottom: 5px; right: 7px;
+      font-family: var(--font-body); font-weight: 300;
+    }
+
+    .play-status {
+      font-size: 14px; color: var(--text2);
+      min-height: 28px; text-align: center; margin-top: 12px;
+    }
+
+    /* PASSWORD MODAL */
+    .pw-modal {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(14,12,10,0.88); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+    }
+    .pw-modal.hidden { display: none; }
+    .pw-card {
+      background: var(--bg2); border: 1px solid var(--border2);
+      border-radius: 20px; padding: 40px 32px; max-width: 380px; width: 100%;
+      text-align: center; box-shadow: var(--shadow); animation: slideUp 0.3s ease;
+    }
+    .pw-icon { font-size: 40px; margin-bottom: 12px; }
+    .pw-card h3 {
+      font-family: var(--font-display); font-size: 24px; font-weight: 800;
+      color: var(--cream); margin-bottom: 10px;
+    }
+    .pw-card p { font-size: 14px; color: var(--text2); margin-bottom: 22px; }
+    .pw-card .field { margin-bottom: 16px; }
+    .pw-err { font-size: 13px; color: var(--pink); margin-top: 10px; }
+    .pw-err.hidden { display: none; }
+
+    .field {
+      width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+      border-radius: var(--radius-sm); padding: 14px 16px; color: var(--cream);
+      font-family: var(--font-body); font-size: 15px; outline: none; transition: border-color 0.2s;
+    }
+    .field:focus { border-color: var(--pink); }
+    .field::placeholder { color: var(--text3); }
+
+    /* REWARD MODAL */
+    .reward-modal {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(14,12,10,0.92); backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; overflow-y: auto;
+    }
+    .reward-modal.hidden { display: none; }
+    .reward-card {
+      background: var(--bg2); border: 1px solid var(--border2);
+      border-radius: 20px; padding: 40px 32px; max-width: 520px; width: 100%;
+      text-align: center; box-shadow: var(--shadow); animation: slideUp 0.4s ease;
+      position: relative; overflow: hidden;
+    }
+    .reward-header { margin-bottom: 24px; }
+    .reward-emoji { font-size: 40px; display: block; margin-bottom: 8px; }
+    .reward-card h3 {
+      font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--cream);
+    }
+    .reward-content { margin-bottom: 24px; }
+    .reward-content img {
+      max-width: 100%; border-radius: var(--radius); display: block; margin: 0 auto 20px;
+      box-shadow: 0 8px 32px rgba(255,63,122,0.2);
+    }
+    .reward-text {
+      font-size: 16px; line-height: 1.8; color: var(--cream2);
+      white-space: pre-wrap; text-align: left;
+      background: var(--bg3); border-radius: var(--radius-sm);
+      padding: 20px; border: 1px solid var(--border2);
+      font-family: var(--font-body);
+    }
+
+    /* CONFETTI */
+    .confetti-wrap { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .confetti-piece {
+      position: absolute; width: 8px; height: 8px; border-radius: 2px;
+      animation: fall 2.5s ease-in forwards;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10px) rotate(0); opacity: 1; }
+      100% { transform: translateY(420px) rotate(720deg); opacity: 0; }
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+      background: var(--bg2); border: 1px solid var(--border2);
+      border-radius: 999px; padding: 12px 24px; font-size: 14px;
+      color: var(--cream); z-index: 300; box-shadow: var(--shadow);
+      animation: toastIn 0.3s ease;
+    }
+    .toast.hidden { display: none; }
+
+    /* HERO glow blobs */
+    .glow-blob {
+      position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+      filter: blur(80px); opacity: 0.15;
+    }
+    .glow-blob-1 { width: 500px; height: 500px; background: var(--pink); top: -100px; left: -150px; }
+    .glow-blob-2 { width: 400px; height: 400px; background: var(--acid); bottom: -100px; right: -100px; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    @keyframes pulse-heart {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .heart-pulse { display: inline-block; animation: pulse-heart 1.2s ease-in-out infinite; }
+
+    /* progress indicator */
+    .progress-dots {
+      display: flex; gap: 6px; margin-top: 16px; justify-content: center; flex-wrap: wrap;
+    }
+    .progress-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border2); border: 1px solid var(--border2);
+      transition: all 0.2s;
+    }
+    .progress-dot.done { background: var(--pink); border-color: var(--pink); box-shadow: 0 0 6px rgba(255,63,122,0.5); }
+
+    @media (max-width: 600px) {
+      #nav { padding: 14px 20px; }
+      .play-wrap { padding: 90px 16px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="glow-blob glow-blob-1"></div>
+<div class="glow-blob glow-blob-2"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <span class="logo">TileLove <span class="heart-pulse">🫀</span></span>
+</nav>
+
+<!-- PLAY PAGE -->
+<div class="play-wrap">
+  <div class="play-meta">
+    <h2 id="play-title">for u babee 🫶🫶🫶</h2>
+    <span id="play-creator-tag">🫀 by ashnooroholic</span>
+  </div>
+
+  <p class="hint" id="play-hint">tap the tiles in the correct order to unlock 🔓 — 16 tiles in the pattern</p>
+
+  <div class="play-tile-grid" id="play-tile-grid" style="grid-template-columns: repeat(4, 1fr);"></div>
+
+  <div class="progress-dots" id="progress-dots"></div>
+
+  <div class="play-status" id="play-status"></div>
+
+  <button class="btn-ghost" id="play-reset-btn" onclick="resetPlay()" style="display:none; margin-top:16px;">↺ try again</button>
+
+  <!-- PASSWORD MODAL -->
+  <div class="pw-modal hidden" id="pw-modal">
+    <div class="pw-card">
+      <div class="pw-icon">🔐</div>
+      <h3>you cracked it!!!</h3>
+      <p>now enter the secret password to unlock your reward 💌</p>
+      <input class="field" type="password" id="pw-input" placeholder="enter password…" />
+      <button class="btn-big" onclick="checkPassword()" style="width:100%;">unlock →</button>
+      <p class="pw-err hidden" id="pw-err">wrong password babe 😬 try again</p>
+    </div>
+  </div>
+
+  <!-- REWARD MODAL -->
+  <div class="reward-modal hidden" id="reward-modal">
+    <div class="reward-card">
+      <div class="confetti-wrap" id="confetti-wrap"></div>
+      <div class="reward-header">
+        <span class="reward-emoji">🎉</span>
+        <h3>you unlocked it!!!</h3>
+      </div>
+      <div class="reward-content" id="reward-content"></div>
+      <button class="btn-ghost" onclick="closeReward()">close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast hidden" id="toast"></div>
+
+<script>
+  // ════════════════════════════════════
+  //  PUZZLE DATA (hardcoded)
+  // ════════════════════════════════════
+
+  // Tile indices are 0-based (tile 1 = index 0, tile 16 = index 15)
+  // Pattern: 1→6→11→16→4→7→10→13→5→9→14→15→12→8→3→2
+  // Convert to 0-based: 0→5→10→15→3→6→9→12→4→8→13→14→11→7→2→1
+
+  const PUZZLE = {
+    title: 'for u babee 🫶🫶🫶',
+    creator: 'ashnooroholic',
+    gridSize: 4,
+    pattern: [0, 5, 10, 15, 3, 6, 9, 12, 4, 8, 13, 14, 11, 7, 2, 1],
+    passwordHash: null, // no password — reward shows directly
+    reward: {
+      type: 'both', // custom: image + letter
+      imagePath: 'image.png',
+      letter: `to my lovely dovely putchu baby🫶🫶🫶🫶,
+mera chotu sa baccha uamhhhhhhhhhhhhhhhhhhhhhhab to apna moood thik kar lo yrrrr dekho na aapk k liye puch ups kiya😭😭😭 vo sab harkate meh aapke face pe smile lane k liye kerta hu babyyyyyyyyy ,i lovieeeeeeeeeeeeeeeeeeee youuuuuuuuuuuuuuuuu meraaaaaaaaaaaaaaaa bacchaaaaaaaaaa `
+    }
+  };
+
+  // ════════════════════════════════════
+  //  STATE
+  // ════════════════════════════════════
+  let playProgress = [];
+
+  // ════════════════════════════════════
+  //  BUILD GRID
+  // ════════════════════════════════════
+  function buildPlayGrid() {
+    const grid = document.getElementById('play-tile-grid');
+    const dots = document.getElementById('progress-dots');
+    const size = PUZZLE.gridSize;
+    grid.innerHTML = '';
+    dots.innerHTML = '';
+
+    for (let i = 0; i < size * size; i++) {
+      const tile = document.createElement('div');
+      tile.className = 'play-tile';
+      tile.dataset.idx = i;
+
+      const label = document.createElement('span');
+      label.className = 'tile-label';
+      label.textContent = i + 1;
+      tile.appendChild(label);
+
+      tile.onclick = () => handleTileTap(i, tile);
+      grid.appendChild(tile);
+    }
+
+    // progress dots
+    for (let i = 0; i < PUZZLE.pattern.length; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'progress-dot';
+      dot.id = 'dot-' + i;
+      dots.appendChild(dot);
+    }
+  }
+
+  // ════════════════════════════════════
+  //  TILE TAP
+  // ════════════════════════════════════
+  function handleTileTap(idx, el) {
+    if (el.classList.contains('locked')) return;
+
+    const expected = PUZZLE.pattern[playProgress.length];
+
+    if (idx === expected) {
+      playProgress.push(idx);
+      el.classList.add('pressed');
+      flashTile(el, 'correct-flash');
+
+      // light up dot
+      const dot = document.getElementById('dot-' + (playProgress.length - 1));
+      if (dot) dot.classList.add('done');
+
+      if (playProgress.length === PUZZLE.pattern.length) {
+        setTimeout(() => {
+          document.getElementById('play-status').textContent = '🎉 correct! unlocking your reward…';
+          // No password needed — show reward directly
+          setTimeout(showReward, 600);
+        }, 300);
+      } else {
+        document.getElementById('play-status').textContent =
+          `✓ ${playProgress.length} / ${PUZZLE.pattern.length}`;
+      }
+    } else {
+      flashTile(el, 'wrong-flash');
+      document.getElementById('play-status').textContent = '😅 wrong tile! starting over…';
+
+      setTimeout(() => {
+        playProgress = [];
+        document.querySelectorAll('.play-tile').forEach(t => {
+          t.classList.remove('pressed', 'correct-flash');
+        });
+        document.querySelectorAll('.progress-dot').forEach(d => d.classList.remove('done'));
+        document.getElementById('play-status').textContent = '';
+        document.getElementById('play-reset-btn').style.display = '';
+      }, 800);
+    }
+  }
+
+  function flashTile(el, cls) {
+    el.classList.add(cls);
+    setTimeout(() => el.classList.remove(cls), 500);
+  }
+
+  function resetPlay() {
+    playProgress = [];
+    document.querySelectorAll('.play-tile').forEach(t => {
+      t.classList.remove('pressed', 'correct-flash', 'locked', 'wrong-flash');
+    });
+    document.querySelectorAll('.progress-dot').forEach(d => d.classList.remove('done'));
+    document.getElementById('play-status').textContent = '';
+    document.getElementById('play-reset-btn').style.display = 'none';
+  }
+
+  // ════════════════════════════════════
+  //  PASSWORD (optional — skipped here)
+  // ════════════════════════════════════
+  function checkPassword() {
+    // no password needed in this version
+    document.getElementById('pw-modal').classList.add('hidden');
+    showReward();
+  }
+
+  document.getElementById('pw-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPassword();
+  });
+
+  // ════════════════════════════════════
+  //  REWARD
+  // ════════════════════════════════════
+  function showReward() {
+    const modal = document.getElementById('reward-modal');
+    const content = document.getElementById('reward-content');
+
+    modal.classList.remove('hidden');
+    content.innerHTML = '';
+
+    // Image
+    const img = document.createElement('img');
+    img.src = PUZZLE.reward.imagePath;
+    img.alt = 'your reward 💌';
+    img.onerror = () => {
+      // If image not found, show a sweet placeholder
+      img.style.display = 'none';
+    };
+    content.appendChild(img);
+
+    // Letter
+    const div = document.createElement('div');
+    div.className = 'reward-text';
+    div.textContent = PUZZLE.reward.letter;
+    content.appendChild(div);
+
+    launchConfetti();
+  }
+
+  function closeReward() {
+    document.getElementById('reward-modal').classList.add('hidden');
+  }
+
+  // ════════════════════════════════════
+  //  CONFETTI
+  // ════════════════════════════════════
+  function launchConfetti() {
+    const wrap = document.getElementById('confetti-wrap');
+    wrap.innerHTML = '';
+    const colors = ['#ff3f7a', '#c8ff57', '#ff9f4a', '#66d9e8', '#fff', '#ff6b9d'];
+    for (let i = 0; i < 60; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.cssText = `
+        left: ${Math.random() * 100}%;
+        top: -10px;
+        background: ${colors[Math.floor(Math.random() * colors.length)]};
+        width: ${Math.random() * 8 + 4}px;
+        height: ${Math.random() * 8 + 4}px;
+        border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+        animation-delay: ${Math.random() * 1.5}s;
+        animation-duration: ${Math.random() * 1.5 + 1.5}s;
+      `;
+      wrap.appendChild(c);
+    }
+  }
+
+  // ════════════════════════════════════
+  //  TOAST
+  // ════════════════════════════════════
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.remove('hidden');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.add('hidden'), 3000);
+  }
+
+  // ════════════════════════════════════
+  //  INIT
+  // ════════════════════════════════════
+  buildPlayGrid();
+</script>
+</body>
+</html>
