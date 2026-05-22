@@ -1,0 +1,20 @@
+// firestore.rules
+// Deploy with: firebase deploy --only firestore:rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /puzzles/{puzzleId} {
+      // Anyone can read puzzles (they're public)
+      allow read: if true;
+      // Anyone can create a puzzle
+      allow create: if request.resource.data.keys().hasAll(['title', 'creator', 'gridSize', 'pattern', 'rewardType', 'reward', 'passwordHash', 'createdAt'])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.pattern is list
+        && request.resource.data.pattern.size() >= 2;
+      // No editing or deleting via client
+      allow update, delete: if false;
+    }
+  }
+}
