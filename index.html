@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TileTok — Puzzle Notes for Lovers</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="noise"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">TileTok 🫧</div>
+    <div class="nav-links">
+      <a href="create.html" class="btn-nav">Create puzzle</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-content">
+      <div class="tag-pill">✨ for the ones who feel everything</div>
+      <h1>Send a secret<br><em>tile by tile.</em></h1>
+      <p class="hero-sub">Build a tap-to-unlock puzzle for your person. Number the tiles, hide the message. Only they know the order. 💌</p>
+      <div class="hero-cta">
+        <a href="create.html" class="btn-primary">Make yours →</a>
+        <a href="#how" class="btn-ghost">how it works</a>
+      </div>
+    </div>
+    <div class="hero-demo">
+      <div class="demo-grid" id="demoGrid"></div>
+      <div class="demo-label">tap in order ↑</div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <div class="how-label">the process</div>
+    <h2>Three steps.<br>One unforgettable moment.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Build your grid</h3>
+        <p>Pick grid size, add your secret message, image, or video URL as the reward.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Number the tiles</h3>
+        <p>Click tiles in the unlock order. Numbers appear. That's your secret pattern.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Share the link</h3>
+        <p>Send the link to your person. They tap in order — and unlock your message. 🫶</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">TileTok 🫧</div>
+    <p>made with love, for people in love</p>
+  </footer>
+
+  <script>
+    // Demo grid animation
+    const grid = document.getElementById('demoGrid');
+    const emojis = ['💌','✨','🩷','🫧','💫','🌙','⭐','🫶','💕'];
+    let cells = [];
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'demo-cell';
+      cell.dataset.index = i;
+      grid.appendChild(cell);
+      cells.push(cell);
+    }
+
+    const order = [4, 0, 8, 2, 6, 1, 7, 3, 5];
+    let step = 0;
+    let revealed = [];
+
+    function runDemo() {
+      if (step < order.length) {
+        const idx = order[step];
+        cells[idx].classList.add('active');
+        cells[idx].textContent = step + 1;
+        revealed.push(idx);
+        step++;
+        setTimeout(runDemo, 600);
+      } else {
+        setTimeout(() => {
+          cells.forEach(c => { c.classList.add('reward'); c.textContent = '🩷'; });
+          setTimeout(reset, 2000);
+        }, 500);
+      }
+    }
+
+    function reset() {
+      cells.forEach(c => { c.className = 'demo-cell'; c.textContent = ''; });
+      step = 0; revealed = [];
+      setTimeout(runDemo, 800);
+    }
+
+    setTimeout(runDemo, 1200);
+  </script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Puzzle — TileTok</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="noise"></div>
+
+  <nav>
+    <a href="index.html" class="logo">TileTok 🫧</a>
+    <div class="nav-links">
+      <span class="step-indicator" id="stepIndicator">Step 1 of 3</span>
+    </div>
+  </nav>
+
+  <main class="create-main">
+
+    <!-- STEP 1: Setup -->
+    <section class="create-step active" id="step1">
+      <div class="step-header">
+        <div class="step-badge">01</div>
+        <h1>Set up your puzzle</h1>
+        <p>Name it, pick grid size, add your reward.</p>
+      </div>
+
+      <div class="form-block">
+        <label>Puzzle title (they'll see this)</label>
+        <input type="text" id="puzzleTitle" placeholder="e.g. for my favorite person 🌙" maxlength="60" />
+      </div>
+
+      <div class="form-block">
+        <label>Grid size</label>
+        <div class="grid-size-picker">
+          <button class="size-btn active" data-size="3">3×3<span>9 tiles</span></button>
+          <button class="size-btn" data-size="4">4×4<span>16 tiles</span></button>
+          <button class="size-btn" data-size="5">5×5<span>25 tiles</span></button>
+        </div>
+      </div>
+
+      <div class="form-block">
+        <label>Reward type</label>
+        <div class="reward-picker">
+          <button class="reward-btn active" data-type="text">💬 Message</button>
+          <button class="reward-btn" data-type="image">🖼 Image URL</button>
+          <button class="reward-btn" data-type="video">🎥 Video URL</button>
+        </div>
+      </div>
+
+      <div class="form-block" id="rewardTextBlock">
+        <label>Your secret message</label>
+        <textarea id="rewardText" placeholder="i love you more than wifi signals and spotify wrapped combined 🩷" maxlength="500"></textarea>
+      </div>
+
+      <div class="form-block hidden" id="rewardMediaBlock">
+        <label id="mediaLabel">Image URL</label>
+        <input type="url" id="rewardMedia" placeholder="https://..." />
+        <p class="hint">paste a link to any image or video (YouTube, imgur, etc.)</p>
+      </div>
+
+      <div class="form-block">
+        <label>Tile color vibe</label>
+        <div class="color-picker">
+          <button class="color-btn active" data-color="pink" style="background:linear-gradient(135deg,#ff6b9d,#ff9dc4)"></button>
+          <button class="color-btn" data-color="purple" style="background:linear-gradient(135deg,#a855f7,#d8b4fe)"></button>
+          <button class="color-btn" data-color="blue" style="background:linear-gradient(135deg,#3b82f6,#93c5fd)"></button>
+          <button class="color-btn" data-color="green" style="background:linear-gradient(135deg,#10b981,#6ee7b7)"></button>
+          <button class="color-btn" data-color="gold" style="background:linear-gradient(135deg,#f59e0b,#fcd34d)"></button>
+          <button class="color-btn" data-color="dark" style="background:linear-gradient(135deg,#1e1e2e,#3d3d5c)"></button>
+        </div>
+      </div>
+
+      <button class="btn-primary full" id="toStep2">Next: Set the pattern →</button>
+    </section>
+
+    <!-- STEP 2: Pattern -->
+    <section class="create-step" id="step2">
+      <div class="step-header">
+        <div class="step-badge">02</div>
+        <h1>Click tiles in unlock order</h1>
+        <p>The numbers you set = the secret pattern. Share the order with your person later (or make them guess!).</p>
+      </div>
+
+      <div class="pattern-container">
+        <div class="puzzle-grid" id="patternGrid"></div>
+        <div class="pattern-controls">
+          <button class="btn-ghost sm" id="resetPattern">↺ Reset</button>
+          <span id="patternStatus">Click tiles to number them</span>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-ghost" id="backToStep1">← Back</button>
+        <button class="btn-primary" id="toStep3" disabled>Save & Get Link →</button>
+      </div>
+    </section>
+
+    <!-- STEP 3: Share -->
+    <section class="create-step" id="step3">
+      <div class="step-header">
+        <div class="step-badge">🎉</div>
+        <h1>Your puzzle is live!</h1>
+        <p>Copy the link and send it to your person.</p>
+      </div>
+
+      <div class="share-card">
+        <div class="share-link-box">
+          <span id="shareUrl">generating...</span>
+          <button class="copy-btn" id="copyBtn">Copy 📋</button>
+        </div>
+        <div class="share-actions">
+          <a id="whatsappShare" href="#" target="_blank" class="share-pill whatsapp">WhatsApp</a>
+          <a id="telegramShare" href="#" target="_blank" class="share-pill telegram">Telegram</a>
+          <button id="nativeShare" class="share-pill native">Share 🔗</button>
+        </div>
+      </div>
+
+      <div class="hint-box">
+        <strong>Psst —</strong> remember to tell them the tile order (or send a hint), or keep it mysterious and let them figure it out! 🫣
+      </div>
+
+      <div class="step-nav center">
+        <a href="create.html" class="btn-ghost">Make another →</a>
+        <a href="index.html" class="btn-ghost">Home</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCpxKkfJmNj2EudEqZbNlLx0UdPDhDRYAY",
+      authDomain: "puzzle-love-note.firebaseapp.com",
+      projectId: "puzzle-love-note",
+      storageBucket: "puzzle-love-note.firebasestorage.app",
+      messagingSenderId: "163699031865",
+      appId: "1:163699031865:web:6fa91a7e30f3a58aa072e8",
+      measurementId: "G-7YF4BYC2BX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const analytics = getAnalytics(app);
+
+    // State
+    let state = {
+      title: '',
+      gridSize: 3,
+      rewardType: 'text',
+      rewardContent: '',
+      tileColor: 'pink',
+      pattern: [],
+      totalTiles: 9
+    };
+
+    // Step navigation
+    function showStep(n) {
+      document.querySelectorAll('.create-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      document.getElementById('stepIndicator').textContent = n < 3 ? `Step ${n} of 3` : 'Done!';
+      window.scrollTo(0, 0);
+    }
+
+    // Grid size buttons
+    document.querySelectorAll('.size-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.gridSize = parseInt(btn.dataset.size);
+        state.totalTiles = state.gridSize * state.gridSize;
+      });
+    });
+
+    // Reward type buttons
+    document.querySelectorAll('.reward-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.reward-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.rewardType = btn.dataset.type;
+        const isMedia = state.rewardType !== 'text';
+        document.getElementById('rewardTextBlock').classList.toggle('hidden', isMedia);
+        document.getElementById('rewardMediaBlock').classList.toggle('hidden', !isMedia);
+        document.getElementById('mediaLabel').textContent = state.rewardType === 'image' ? 'Image URL' : 'Video URL';
+      });
+    });
+
+    // Color picker
+    document.querySelectorAll('.color-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.tileColor = btn.dataset.color;
+        if (document.getElementById('patternGrid').children.length) buildPatternGrid();
+      });
+    });
+
+    // Step 1 → 2
+    document.getElementById('toStep2').addEventListener('click', () => {
+      const title = document.getElementById('puzzleTitle').value.trim();
+      const reward = state.rewardType === 'text'
+        ? document.getElementById('rewardText').value.trim()
+        : document.getElementById('rewardMedia').value.trim();
+
+      if (!title) { alert('Give your puzzle a name! 🥺'); return; }
+      if (!reward) { alert('Add your reward content! 🩷'); return; }
+
+      state.title = title;
+      state.rewardContent = reward;
+      state.totalTiles = state.gridSize * state.gridSize;
+      state.pattern = [];
+
+      buildPatternGrid();
+      showStep(2);
+    });
+
+    // Build pattern grid
+    function buildPatternGrid() {
+      const grid = document.getElementById('patternGrid');
+      grid.innerHTML = '';
+      grid.style.gridTemplateColumns = `repeat(${state.gridSize}, 1fr)`;
+      state.pattern = [];
+      updatePatternStatus();
+
+      for (let i = 0; i < state.totalTiles; i++) {
+        const tile = document.createElement('button');
+        tile.className = `ptile color-${state.tileColor}`;
+        tile.dataset.idx = i;
+        tile.addEventListener('click', () => handleTileClick(i, tile));
+        grid.appendChild(tile);
+      }
+      document.getElementById('toStep3').disabled = true;
+    }
+
+    function handleTileClick(idx, tile) {
+      if (state.pattern.includes(idx)) {
+        // Deselect last only
+        if (state.pattern[state.pattern.length - 1] === idx) {
+          state.pattern.pop();
+          tile.textContent = '';
+          tile.classList.remove('numbered');
+          renumberTiles();
+        }
+        return;
+      }
+      state.pattern.push(idx);
+      tile.textContent = state.pattern.length;
+      tile.classList.add('numbered');
+      updatePatternStatus();
+
+      if (state.pattern.length === state.totalTiles) {
+        document.getElementById('toStep3').disabled = false;
+      }
+    }
+
+    function renumberTiles() {
+      const tiles = document.querySelectorAll('.ptile');
+      tiles.forEach(t => { t.textContent = ''; t.classList.remove('numbered'); });
+      state.pattern.forEach((idx, i) => {
+        tiles[idx].textContent = i + 1;
+        tiles[idx].classList.add('numbered');
+      });
+      updatePatternStatus();
+    }
+
+    function updatePatternStatus() {
+      const remaining = state.totalTiles - state.pattern.length;
+      const el = document.getElementById('patternStatus');
+      if (remaining === 0) {
+        el.textContent = '✅ All tiles numbered!';
+      } else {
+        el.textContent = `${state.pattern.length}/${state.totalTiles} tiles numbered`;
+      }
+    }
+
+    document.getElementById('resetPattern').addEventListener('click', buildPatternGrid);
+    document.getElementById('backToStep1').addEventListener('click', () => showStep(1));
+
+    // Step 2 → 3: Save to Firestore
+    document.getElementById('toStep3').addEventListener('click', async () => {
+      document.getElementById('toStep3').textContent = 'Saving... ✨';
+      document.getElementById('toStep3').disabled = true;
+
+      try {
+        const docRef = await addDoc(collection(db, 'puzzles'), {
+          title: state.title,
+          gridSize: state.gridSize,
+          rewardType: state.rewardType,
+          rewardContent: state.rewardContent,
+          tileColor: state.tileColor,
+          pattern: state.pattern,
+          createdAt: serverTimestamp(),
+          plays: 0
+        });
+
+        const url = `${window.location.origin}/play.html?id=${docRef.id}`;
+        document.getElementById('shareUrl').textContent = url;
+        document.getElementById('copyBtn').addEventListener('click', () => {
+          navigator.clipboard.writeText(url);
+          document.getElementById('copyBtn').textContent = 'Copied! ✅';
+          setTimeout(() => document.getElementById('copyBtn').textContent = 'Copy 📋', 2000);
+        });
+
+        const msg = encodeURIComponent(`🫧 tap this puzzle i made for you: ${url}`);
+        document.getElementById('whatsappShare').href = `https://wa.me/?text=${msg}`;
+        document.getElementById('telegramShare').href = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent('tap this puzzle i made for you 🫧')}`;
+
+        document.getElementById('nativeShare').addEventListener('click', () => {
+          if (navigator.share) navigator.share({ title: state.title, url });
+          else { navigator.clipboard.writeText(url); alert('Link copied!'); }
+        });
+
+        showStep(3);
+      } catch (e) {
+        console.error(e);
+        alert('Oops, something went wrong. Check your internet and try again.');
+        document.getElementById('toStep3').textContent = 'Save & Get Link →';
+        document.getElementById('toStep3').disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
